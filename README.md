@@ -8,14 +8,15 @@ this is a golang version of my [shell-script version of fromorc](https://github.
 ## Install/run
 
 1. clone this repo 
-1. run `go run .`
+2. cd into the directory
+3. run `go run .`
 
 ## Features
 
 ### List all trails with status
 
 ```
-./fromorc.sh
+go run .
 ```
 
 #### Outputs
