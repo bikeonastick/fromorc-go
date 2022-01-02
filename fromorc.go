@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 type Trails []struct {
@@ -35,6 +36,18 @@ func TrailStatusEmoji(status string) string {
 
 }
 
+func TrailStatusConfidenceEmoji(updatedAt int64) string {
+	updatedTime := time.UnixMilli(updatedAt)
+	var timeSince time.Duration = time.Now().Sub(updatedTime)
+	if timeSince.Hours() <= 48 {
+		return "\xe2\x9c\x85"
+	} else if timeSince.Hours() <= 168 {
+		return "\xf0\x9f\xa4\x9e"
+	} else {
+		return "\xf0\x9f\x92\xa9"
+	}
+}
+
 func GetData(url string) []byte {
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -54,7 +67,6 @@ func GetData(url string) []byte {
 	}
 
 	return jsonByte
-
 }
 
 func getTrailObjs(url string) (t Trails) {
@@ -71,8 +83,9 @@ func main() {
 	trails := getTrailObjs("https://api.morcmtb.org/v1/trails")
 
 	for _, trail := range trails {
-		fmt.Println(fmt.Sprintf("%s - %s", trail.TrailName,
-			TrailStatusEmoji(trail.TrailStatus)))
+		fmt.Println(fmt.Sprintf("%s - %s - %s", trail.TrailName,
+			TrailStatusEmoji(trail.TrailStatus),
+			TrailStatusConfidenceEmoji(trail.UpdatedAt)))
 	}
 
 }
