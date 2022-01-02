@@ -24,6 +24,17 @@ type Trails []struct {
 	Street      string `json:"street"`
 }
 
+func TrailStatusEmoji(status string) string {
+	if status == "Closed" {
+		return "\xF0\x9F\x91\x8E"
+	} else if status == "Open" {
+		return "\xF0\x9F\x91\x8D"
+	} else {
+		return fmt.Sprintf("¯\\_(ツ)_/¯ - %s", status)
+	}
+
+}
+
 func GetData(url string) []byte {
 	request, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -56,13 +67,12 @@ func getTrailObjs(url string) (t Trails) {
 	}
 }
 
-func getTrails() string {
-	resp := GetData("https://api.morcmtb.org/v1/trails")
-	return string(json.RawMessage(resp))
-}
-
 func main() {
-	ret := getTrailObjs("https://api.morcmtb.org/v1/trails")
-	fmt.Println(ret)
+	trails := getTrailObjs("https://api.morcmtb.org/v1/trails")
+
+	for _, trail := range trails {
+		fmt.Println(fmt.Sprintf("%s - %s", trail.TrailName,
+			TrailStatusEmoji(trail.TrailStatus)))
+	}
 
 }
